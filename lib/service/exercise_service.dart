@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:exercises_filtered_search/model/exercise_model.dart';
 
-
 abstract class IExerciseService {
   final Dio dio;
 
@@ -15,8 +14,6 @@ abstract class IExerciseService {
 enum _ExercisesPath { exercises }
 
 class ExerciseService extends IExerciseService {
-  // String path = 'https://exercises-by-api-ninjas.p.rapidapi.com/v1/exercises';
-
   ExerciseService(super.dio);
 
   @override
