@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import '../view_model/exercise_view_model.dart';
 
@@ -14,16 +13,14 @@ class ExerciseView extends StatefulWidget {
 
 class _ExerciseViewState extends ExerciseViewModel {
   final double _expandedHeight = 100;
-
   final double _radiusValue = 20;
   final double _sizedBoxWidth = 10;
   final double _paddingValue = 10;
   late final TextEditingController _controller;
+  bool _checkBoxState = false;
 
-  final bool isLoading = true;
-
-  Set<String> _types = {};
-  Set<String> _muscles = {};
+  final Set<String> _types = {};
+  final List<String> _muscles = [];
 
   _createTypes() {
     for (int i = 0; i < exercises.length; i++) {
@@ -62,7 +59,6 @@ class _ExerciseViewState extends ExerciseViewModel {
             floating: true,
             pinned: true,
             snap: true,
-
             title: Row(
               children: [
                 Expanded(
@@ -72,7 +68,17 @@ class _ExerciseViewState extends ExerciseViewModel {
                 SizedBox(
                   width: _sizedBoxWidth,
                 ),
-                _buildFloatingActionButton(),
+                FloatingActionButton(
+                    mini: true,
+                    onPressed: (() => showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+                          context: context,
+                          builder: (context) {
+                            return _buildModalSheet();
+                          },
+                        )),
+                    child: const Icon(Icons.search_sharp)),
               ],
             ),
             // ignore: prefer_const_constructors
@@ -99,55 +105,57 @@ class _ExerciseViewState extends ExerciseViewModel {
     );
   }
 
-  FloatingActionButton _buildFloatingActionButton() {
-    return FloatingActionButton(
-      mini: true,
-      onPressed: filteredSearchModalBottomSheet,
-      child: const Icon(Icons.search_sharp),
+  SingleChildScrollView _buildModalSheet() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ExpansionTile(key: const PageStorageKey('type'), title: const Text('Type'), children: [
+            for (String val in _types)
+              StatefulBuilder(builder: (context, setState) {
+                return CheckboxListTile(
+                    value: _checkBoxState,
+                    // activeColor: Colors.red,
+                    title: Text(val),
+                    // selected: true,
+                    onChanged: (value) {
+                      setState(() {
+                        _checkBoxState = value!;
+                      });
+                    });
+              }),
+          ]),
+          ExpansionTile(
+            key: const PageStorageKey('muscle'),
+            title: const Text('Muscle'),
+
+            children: [
+              for (String val in _muscles)
+                StatefulBuilder(builder: (context, setState) {
+                  return CheckboxListTile(
+                      value: _checkBoxState,
+                      // activeColor: Colors.red,
+                      title: Text(val),
+                      // selected: true,
+                      onChanged: (value) {
+                        setState(() {
+                          _checkBoxState = value!;
+                        });
+                      });
+                }),
+            ],
+
+            // subtitle: Text(exercises[index].muscle.toString()),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            child: const Text('Search'),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+        ],
+      ),
     );
-  }
-
-  Future<dynamic> filteredSearchModalBottomSheet() async {
-    final modal = await showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height / 2,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ExpansionTile(key: PageStorageKey('type'), title: Text('Type'), children: [
-                    for (String val in _types)
-                      ListTile(
-                        title: Text(val),
-                        trailing: Checkbox(onChanged: (bool? value) {}, value: true),
-                      ),
-                  ]
-
-                      // Checkbox(onChanged: (bool? value) {}, value: true),
-                      // subtitle: Text(exercises[index].muscle.toString()),
-                      ),
-                  ExpansionTile(
-                    key: PageStorageKey('muscle'),
-                    title: Text('Muscle'),
-
-                    children: [
-                      for (String val in _muscles)
-                        ListTile(
-                          title: Text(val),
-                          trailing: Checkbox(onChanged: (bool? value) {}, value: true),
-                        ),
-                    ],
-
-                    // subtitle: Text(exercises[index].muscle.toString()),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-
-    return modal;
   }
 
   TextField _buildSearchField(BuildContext context) {

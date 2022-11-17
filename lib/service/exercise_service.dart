@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:exercises_filtered_search/model/exercise_model.dart';
-import 'package:flutter/material.dart';
+
 
 abstract class IExerciseService {
   final Dio dio;

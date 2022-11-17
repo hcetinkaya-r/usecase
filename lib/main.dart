@@ -26,11 +26,15 @@ class MyApp extends StatelessWidget {
             statusBarBrightness: Brightness.light,
           ),
         ),
-    
         iconTheme: const IconThemeData(color: Colors.black),
         textTheme: ThemeData.light().textTheme.copyWith(
               headline1: const TextStyle(color: Colors.black54, fontSize: 15, fontWeight: FontWeight.bold),
             ),
+        checkboxTheme:
+            CheckboxThemeData(fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+          if (states.contains(MaterialState.selected)) return Colors.green;
+          return null;
+        })),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.white,
         ),
