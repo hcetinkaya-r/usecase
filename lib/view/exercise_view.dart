@@ -163,7 +163,7 @@ class _ExerciseViewState extends ExerciseViewModel {
       controller: _controller,
 
       onChanged: (String value) {},
-      cursorColor: Theme.of(context).primaryColor,
+      cursorColor: Colors.grey,
       // autofocus: true,
       decoration: _inputDecorator(),
     );
